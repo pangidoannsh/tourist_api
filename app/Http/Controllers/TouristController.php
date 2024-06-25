@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Facility;
 use App\Models\Tourist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -40,8 +41,12 @@ class TouristController extends Controller
             "lon" => $request->lon,
             "lat" => $request->lat,
             "address" => $request->address,
-            "image" => "images/" . $imageName
+            "image" => "images/" . $imageName,
+            "video" => $request->video
         ]);
+        if ($request->facilities) {
+            Facility::newInit($request->facilities, $model->id);
+        }
         return response()->json([
             "message" => "Data Detail Berhasil Ditambahkan",
             "data" => $model
@@ -54,6 +59,7 @@ class TouristController extends Controller
     public function show($id)
     {
         $model = Tourist::findOrFail($id);
+        $model->facilities;
         return response()->json([
             "message" => "Data Detail Berhasil Ditampilkan",
             "data" => $model
@@ -76,7 +82,12 @@ class TouristController extends Controller
         $model->address = $request->address;
         $model->lon = $request->lon;
         $model->lat = $request->lat;
+        $model->video = $request->video;
         $model->update();
+
+        if ($request->facilities) {
+            Facility::newInit($request->facilities, $model->id);
+        }
         return response()->json([
             "message" => "Data Detail Berhasil Diupdate",
             "data" => $model
