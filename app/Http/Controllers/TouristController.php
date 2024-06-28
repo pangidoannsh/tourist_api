@@ -12,12 +12,19 @@ class TouristController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $model = Tourist::all();
+        if ($request->s) {
+            $model = Tourist::where("name", 'LIKE', "%{$request->s}%")->get();
+        } elseif ($request->k) {
+            $model = Tourist::where("address", $request->k)->get();
+        } else {
+            $model = Tourist::all();
+        }
         return response()->json([
             "message" => "Data Detail Berhasil Ditampilkan",
-            "data" => $model
+            "data" => $model,
+            "search" => $request->s
         ]);
     }
     public function indexPublic()
