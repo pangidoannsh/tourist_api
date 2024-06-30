@@ -14,4 +14,14 @@ class Tourist extends Model
     {
         return $this->hasMany(Facility::class, "tourist_id", "id");
     }
+
+    public function favorite()
+    {
+        return $this->hasMany(Favorite::class, "tourist_id", "id");
+    }
+
+    public function getIsFavoriteAttribute()
+    {
+        // return $this->favorite()->where('user_id', $user->id)->exists();
+    }
 }

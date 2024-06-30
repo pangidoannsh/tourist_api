@@ -134,4 +134,29 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    public function changePassword(Request $request)
+    {
+        $oldPassword = $request->oldPassword;
+        $newPassword = $request->newPassword;
+        $user = User::find($request->user()->id);
+        if (!empty($user) && Hash::check($oldPassword, $user->password)) {
+            $user->password = Hash::make($newPassword);
+            $user->update();
+            return response()->json([], 204);
+        } else {
+            return response()->json([
+                'status' => false,
+                'data' => null,
+                'errors' => "Gagal mengubah password",
+                'message' => 'Password lama yang anda masukkan salah!',
+            ], 400);
+        }
+        return response()->json([
+            'status' => false,
+            'data' => null,
+            'errors' => "Gagal mengubah password",
+            'message' => 'Terdapat kesalahan pada Api/AuthController.changePassword!',
+        ], 500);
+    }
 }

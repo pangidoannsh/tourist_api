@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Facility;
+use App\Models\Favorite;
 use App\Models\Tourist;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
 class TouristController extends Controller
@@ -67,6 +69,9 @@ class TouristController extends Controller
     {
         $model = Tourist::findOrFail($id);
         $model->facilities;
+        $userId = optional(Auth::guard('sanctum')->user())->id;
+        $isFavorite = Favorite::where("tourist_id", $model->id)->where("user_id", $userId)->exists();
+        $model->isFavorite = $isFavorite;
         return response()->json([
             "message" => "Data Detail Berhasil Ditampilkan",
             "data" => $model
